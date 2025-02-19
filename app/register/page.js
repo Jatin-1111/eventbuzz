@@ -53,13 +53,13 @@ const RegisterPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[var(--background)] flex items-center justify-center px-4 py-6">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className="w-full max-w-5xl bg-[var(--surface)] p-8 rounded-2xl shadow-lg border border-[var(--accent-primary)] border-opacity-20"
       >
-        <div className="text-center mb-12 mt-8">
+        <div className="text-center mb-8 mt-4">
           <h1 className="text-4xl font-bold text-[var(--text-primary)] mb-3 font-['Plus_Jakarta_Sans']">
             Event<span className="text-[var(--accent-primary)]">Buzz</span>
           </h1>
