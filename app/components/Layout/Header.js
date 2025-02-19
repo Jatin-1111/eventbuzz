@@ -1,13 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, Shield, Calendar, ChevronDown } from 'lucide-react';
+import { Menu, X, User, Shield, Calendar, ChevronDown, LogIn } from 'lucide-react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
 
 const MotionLink = motion(Link);
 
-const Header = ({ isAdmin = false }) => {
+const Header = ({ isAuthenticated = false, userRole = 'user' }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [hidden, setHidden] = useState(false);
     const [isAtTop, setIsAtTop] = useState(true);
@@ -29,32 +28,87 @@ const Header = ({ isAdmin = false }) => {
         setIsAtTop(latest < 50);
     });
 
-    const navItems = [
-        {
-            name: 'Events',
-            icon: Calendar,
-            dropdownItems: ['Past Events', 'My Events', 'Live Events'],
-            href: '/events',
-        },
-        ...(isAdmin ? [{
-            name: 'Dashboard',
-            dropdownItems: ['Overview', 'Analytics', 'Reports'],
-            href: '/dashboard',
-        }] : []),
-        {
-            name: 'About',
-            href: '/about',
-        },
-        {
-            name: 'Contact Us',
-            href: '/contact',
-        },
-        ...(isAdmin ? [{
-            name: 'Admin',
-            icon: Shield,
-            dropdownItems: ['User Management', 'Settings', 'Logs']
-        }] : []),
-    ];
+    // Define navigation items based on authentication state and role
+    const getNavItems = () => {
+        const publicItems = [
+            {
+                name: 'Events',
+                icon: Calendar,
+                href: '/events',
+            },
+            {
+                name: 'About',
+                href: '/about',
+            },
+            {
+                name: 'Contact',
+                href: '/contact',
+            },
+        ];
+
+        const authenticatedItems = [
+            {
+                name: 'Events',
+                icon: Calendar,
+                dropdownItems: ['All Events', 'My Events', 'Live Events'],
+                href: '/events',
+            },
+            {
+                name: 'About',
+                href: '/about',
+            },
+            {
+                name: 'Contact',
+                href: '/contact',
+            },
+        ];
+
+        const adminItems = [
+            ...authenticatedItems,
+            {
+                name: 'Dashboard',
+                icon: Shield,
+                dropdownItems: ['Overview', 'Analytics', 'Reports'],
+                href: '/dashboard',
+            },
+            {
+                name: 'Admin',
+                icon: Shield,
+                dropdownItems: ['User Management', 'Event Management', 'Settings'],
+                href: '/admin',
+            },
+        ];
+
+        if (!isAuthenticated) return publicItems;
+        return userRole === 'admin' ? adminItems : authenticatedItems;
+    };
+
+    const navItems = getNavItems();
+
+    const AuthButtons = () => {
+        if (!isAuthenticated) {
+            return (
+                <div className="flex items-center space-x-4">
+                    <Link href="/login">
+                        <motion.div
+                            whileHover={{ scale: 1.05 }}
+                            className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+                        >
+                            <LogIn className="w-4 h-4" />
+                            <span>Login</span>
+                        </motion.div>
+                    </Link>
+                </div>
+            );
+        }
+
+        return (
+            <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
+                <User className="w-5 h-5" />
+                <span>Profile</span>
+            </div>
+        );
+    };
 
     const DropdownMenu = ({ items, isOpen, onClose }) => (
         <AnimatePresence>
@@ -110,7 +164,7 @@ const Header = ({ isAdmin = false }) => {
                             className="text-2xl font-bold text-[var(--text-primary)] mr-8 font-['Plus_Jakarta_Sans']"
                         >
                             Event<span className="text-[var(--accent-primary)]">Buzz</span>
-                            {isAdmin && (
+                            {userRole === 'admin' && isAuthenticated && (
                                 <motion.span
                                     className="ml-2 text-xs bg-[var(--accent-primary)] text-[var(--background)] px-2 py-1 rounded-full font-normal"
                                     whileHover={{ scale: 1.1 }}
@@ -144,11 +198,7 @@ const Header = ({ isAdmin = false }) => {
                                 )}
                             </div>
                         ))}
-
-                        <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
-                            <User className="w-5 h-5" />
-                            <span>Profile</span>
-                        </div>
+                        <AuthButtons />
                     </nav>
 
                     {/* Mobile Menu Button */}
@@ -219,9 +269,8 @@ const Header = ({ isAdmin = false }) => {
                                     )}
                                 </motion.div>
                             ))}
-                            <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
-                                <User className="w-4 h-4" />
-                                <span>Profile</span>
+                            <div className="pt-4 border-t border-[var(--accent-primary)] border-opacity-20">
+                                <AuthButtons />
                             </div>
                         </div>
                     </motion.div>
