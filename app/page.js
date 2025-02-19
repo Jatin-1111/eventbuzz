@@ -1,9 +1,9 @@
 "use client"
 import React from "react";
-import HeroSection from "./components/Herosection";
-import FAQSection from "./components/FAQs";
-import FeaturedEvents from "./components/FeaturedEvents";
-import Calendar from "./components/Calendar";
+import HeroSection from "./components/Home/Herosection";
+import FAQSection from "./components/Home/FAQs";
+import FeaturedEvents from "./components/Home/FeaturedEvents";
+import Calendar from "./components/Home/Calendar";
 
 const Home = () => {
   return (
