@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 
-export default function Goonj() {
+export default function Footer() {
     return (
       <div className="bg-gray-900 text-white min-h-screen p-6 flex flex-col items-center">
         <div className="max-w-3xl text-center">
