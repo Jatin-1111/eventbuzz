@@ -39,7 +39,7 @@ const FeaturedEvents = () => {
             date: "April 2, 2024",
             time: "11:00 AM - 8:00 PM",
             location: "University Plaza",
-            image: "/api/placeholder/800/400",
+            image: "/cultural night.jpg",
             category: "Culture"
         },
         {
@@ -49,7 +49,7 @@ const FeaturedEvents = () => {
             date: "April 15, 2024",
             time: "10:00 AM - 4:00 PM",
             location: "Research Center",
-            image: "/api/placeholder/800/400",
+            image: "/research.jpg",
             category: "Academic"
         },
         {
@@ -59,7 +59,7 @@ const FeaturedEvents = () => {
             date: "May 1, 2024",
             time: "8:00 AM - 6:00 PM",
             location: "Sports Complex",
-            image: "/api/placeholder/800/400",
+            image: "/Sports.jpg",
             category: "Sports"
         }
     ];

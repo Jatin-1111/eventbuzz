@@ -2,8 +2,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Instagram, Linkedin, Users, Trophy, Target, Heart, Lightbulb, Globe, Calendar } from 'lucide-react';
+import Image from 'next/image';
 
-const TeamMember = ({ name, branch, college, phone, instagram, linkedin }) => (
+const TeamMember = ({ name, branch, college, phone, instagram, linkedin, image }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -16,14 +17,17 @@ const TeamMember = ({ name, branch, college, phone, instagram, linkedin }) => (
   >
     <div className="flex flex-col items-center">
       <motion.div
-        className="w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-[var(--accent-primary)]"
+        className="w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-[var(--accent-primary)] relative"
         whileHover={{ scale: 1.1 }}
         transition={{ duration: 0.3 }}
       >
-        <img
-          src="/api/placeholder/128/128"
+        <Image
+          src={image}
           alt={name}
-          className="w-full h-full object-cover"
+          fill
+          sizes="(max-width: 128px) 100vw, 128px"
+          className="object-cover"
+          priority
         />
       </motion.div>
       <h3 className="text-xl font-semibold text-[var(--text-primary)] mb-2">{name}</h3>
@@ -113,34 +117,38 @@ const AboutPage = () => {
     {
       name: "Hitesh Garg",
       branch: "Information Technology",
-      college: "University Institute of Engineering",
+      college: "University Institute of Engineering Technology",
       phone: "+91 82890 84124",
       instagram: "https://instagram.com/its.h1t3sh",
-      linkedin: "https://linkedin.com/in/hitesh-garg"
+      linkedin: "https://linkedin.com/in/hitesh-garg",
+      image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1739992763/uploaded_images/ktbtkjh6ppmex4dzdcyv.jpg"
     },
     {
       name: "Sanchi Agarwal",
       branch: "ECE",
-      college: "University Institute of Engineering",
+      college: "University Institute of Engineering Technology",
       phone: "+1234567891",
       instagram: "https://instagram.com/janesmith",
-      linkedin: "https://linkedin.com/in/janesmith"
+      linkedin: "https://linkedin.com/in/janesmith",
+      image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1739992774/uploaded_images/ghp8qx8kdknm0uduznry.jpg"
     },
     {
       name: "Jatin",
       branch: "Information Technology",
-      college: "University Institute of Engineering",
+      college: "University Institute of Engineering Technology",
       phone: "+1234567892",
       instagram: "https://instagram.com/mikejohnson",
-      linkedin: "https://linkedin.com/in/mikejohnson"
+      linkedin: "https://linkedin.com/in/mikejohnson",
+      image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1739992764/uploaded_images/syegi8darashca65kt92.jpg"
     },
     {
       name: "Rakshak",
       branch: "ECE",
-      college: "University Institute of Engineering",
+      college: "University Institute of Engineering Technology",
       phone: "+1234567893",
       instagram: "https://instagram.com/sarahwilliams",
-      linkedin: "https://linkedin.com/in/sarahwilliams"
+      linkedin: "https://linkedin.com/in/sarahwilliams",
+      image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1739992766/uploaded_images/zqs6zpsyjoweq64mqewl.jpg"
     }
   ];
 
