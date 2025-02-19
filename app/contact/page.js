@@ -16,7 +16,7 @@ const Navbar = () => {
               Event<span className="text-cyan-500">Buzz</span>
             </span>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex space-x-8">
             <a href="#events" className="text-cyan-100 hover:text-cyan-500 transition-colors">Events</a>
@@ -91,34 +91,6 @@ const InfoCard = ({ icon: Icon, title, children }) => (
   </motion.div>
 );
 
-// Footer Component
-const Footer = () => (
-  <footer className="bg-[#0A192F] border-t border-cyan-500/20 py-8 mt-12">
-    <div className="container mx-auto px-4">
-      <div className="flex justify-center space-x-6">
-        <SocialIcon
-          icon={Instagram}
-          href="https://instagram.com/eventbuzz"
-          label="Follow us on Instagram"
-        />
-        <SocialIcon
-          icon={Facebook}
-          href="https://facebook.com/eventbuzz"
-          label="Like us on Facebook"
-        />
-        <SocialIcon
-          icon={Youtube}
-          href="https://youtube.com/eventbuzz"
-          label="Subscribe to our YouTube"
-        />
-      </div>
-      <div className="text-center mt-6 text-cyan-100">
-        <p>&copy; 2025 EventBuzz. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-);
-
 // Main Contact Page Component
 const ContactPage = () => {
   const [formState, setFormState] = useState({
@@ -138,7 +110,6 @@ const ContactPage = () => {
 
   return (
     <>
-      <Navbar />
       <main className="bg-[#0A192F] min-h-screen">
         {/* Background gradient */}
         <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 to-transparent" />
@@ -251,9 +222,6 @@ const ContactPage = () => {
             </div>
           </motion.div>
         </div>
-
-        {/* Footer */}
-        <Footer />
       </main>
     </>
   );
