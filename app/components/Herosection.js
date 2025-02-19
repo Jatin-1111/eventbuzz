@@ -34,7 +34,7 @@ const HeroSection = () => {
     ];
 
     return (
-        <div ref={targetRef} className="relative w-full min-h-screen overflow-hidden bg-[var(--background)]">
+        <div ref={targetRef} className="relative w-full min-h-screen overflow-hidden bg-[var(--background)] pb-10">
             {/* Parallax Background Layers */}
             <div className="absolute inset-0 w-full h-full">
                 {/* Background Layer - Slowest moving */}
@@ -151,7 +151,7 @@ const HeroSection = () => {
                                 >
                                     <motion.div
                                         className="flex items-center mb-4 text-[var(--accent-primary)]"
-                                        whileHover={{ scale: 1.1 }}
+                                        whileHover={{ scale: 1.05 }}
                                     >
                                         {feature.icon}
                                         <h3 className="ml-4 text-xl font-semibold text-[var(--text-primary)]">

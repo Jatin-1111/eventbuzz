@@ -1,15 +1,23 @@
-'use client'
-import React, { useState } from 'react';
+'use client';
+import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { Menu, X, User, Shield, Calendar, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const MotionLink = motion(Link);
 
 const Header = ({ isAdmin = false }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [hidden, setHidden] = useState(false);
     const [isAtTop, setIsAtTop] = useState(true);
     const [activeDropdown, setActiveDropdown] = useState(null);
+    const [isMounted, setIsMounted] = useState(false);
     const { scrollY } = useScroll();
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious();
@@ -25,15 +33,22 @@ const Header = ({ isAdmin = false }) => {
         {
             name: 'Events',
             icon: Calendar,
-            dropdownItems: ['Upcoming Events', 'Past Events', 'My Events', 'Create Event']
+            dropdownItems: ['Past Events', 'My Events', 'Live Events'],
+            href: '/events',
         },
         ...(isAdmin ? [{
-
             name: 'Dashboard',
-            dropdownItems: ['Overview', 'Analytics', 'Reports']
-
+            dropdownItems: ['Overview', 'Analytics', 'Reports'],
+            href: '/dashboard',
         }] : []),
-        { name: 'About' },
+        {
+            name: 'About',
+            href: '/about',
+        },
+        {
+            name: 'Contact Us',
+            href: '/contact',
+        },
         ...(isAdmin ? [{
             name: 'Admin',
             icon: Shield,
@@ -69,12 +84,17 @@ const Header = ({ isAdmin = false }) => {
         </AnimatePresence>
     );
 
+    if (!isMounted) {
+        return null;
+    }
+
     return (
         <motion.header
             variants={{
                 visible: { y: 0 },
                 hidden: { y: -100 }
             }}
+            initial="visible"
             animate={hidden ? "hidden" : "visible"}
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className={`fixed w-full z-50 ${isAtTop ? 'bg-transparent' : 'bg-[var(--background)]/95 backdrop-blur-md'} transition-colors duration-300`}
@@ -82,43 +102,39 @@ const Header = ({ isAdmin = false }) => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6">
                 <div className="flex justify-between items-center py-4 md:py-6">
                     {/* Logo */}
-                    <motion.div
-                        className="flex items-center"
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        whileHover={{ scale: 1.05 }}
-                    >
-                        <Link href="/">
-                            <h1 className="text-2xl font-bold text-[var(--text-primary)] mr-8 font-['Plus_Jakarta_Sans']">
-                                Event<span className="text-[var(--accent-primary)]">Buzz</span>
-                                {isAdmin && (
-                                    <motion.span
-                                        className="ml-2 text-xs bg-[var(--accent-primary)] text-[var(--background)] px-2 py-1 rounded-full font-normal"
-                                        whileHover={{ scale: 1.1 }}
-                                    >
-                                        Admin
-                                    </motion.span>
-                                )}
-                            </h1>
-                        </Link>
-                    </motion.div>
+                    <Link href="/" className="flex items-center">
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            whileHover={{ scale: 1.05 }}
+                            className="text-2xl font-bold text-[var(--text-primary)] mr-8 font-['Plus_Jakarta_Sans']"
+                        >
+                            Event<span className="text-[var(--accent-primary)]">Buzz</span>
+                            {isAdmin && (
+                                <motion.span
+                                    className="ml-2 text-xs bg-[var(--accent-primary)] text-[var(--background)] px-2 py-1 rounded-full font-normal"
+                                    whileHover={{ scale: 1.1 }}
+                                >
+                                    Admin
+                                </motion.span>
+                            )}
+                        </motion.div>
+                    </Link>
 
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center space-x-8">
                         {navItems.map((item, index) => (
                             <div key={item.name} className="relative">
-                                <motion.div
-                                    className="flex items-center space-x-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
-                                    initial={{ opacity: 0, y: -20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3, delay: index * 0.1 }}
-                                    whileHover={{ scale: 1.05 }}
-                                    onHoverStart={() => item.dropdownItems && setActiveDropdown(item.name)}
-                                >
-                                    {item.icon && <item.icon className="w-4 h-4" />}
-                                    <span>{item.name}</span>
-                                    {item.dropdownItems && <ChevronDown className="w-4 h-4" />}
-                                </motion.div>
+                                <Link href={item.href} className="group">
+                                    <div
+                                        className="flex items-center space-x-1 text-[var(--text-secondary)] group-hover:text-[var(--text-primary)] cursor-pointer"
+                                        onMouseEnter={() => item.dropdownItems && setActiveDropdown(item.name)}
+                                    >
+                                        {item.icon && <item.icon className="w-4 h-4" />}
+                                        <span>{item.name}</span>
+                                        {item.dropdownItems && <ChevronDown className="w-4 h-4" />}
+                                    </div>
+                                </Link>
                                 {item.dropdownItems && (
                                     <DropdownMenu
                                         items={item.dropdownItems}
@@ -129,13 +145,10 @@ const Header = ({ isAdmin = false }) => {
                             </div>
                         ))}
 
-                        <motion.div
-                            className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                            whileHover={{ scale: 1.05 }}
-                        >
+                        <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
                             <User className="w-5 h-5" />
                             <span>Profile</span>
-                        </motion.div>
+                        </div>
                     </nav>
 
                     {/* Mobile Menu Button */}
@@ -179,15 +192,17 @@ const Header = ({ isAdmin = false }) => {
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: index * 0.1 }}
                                 >
-                                    <div className="flex items-center justify-between text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
-                                        <div className="flex items-center space-x-2">
-                                            {item.icon && <item.icon className="w-4 h-4" />}
-                                            <span>{item.name}</span>
+                                    <Link href={item.href}>
+                                        <div className="flex items-center justify-between text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
+                                            <div className="flex items-center space-x-2">
+                                                {item.icon && <item.icon className="w-4 h-4" />}
+                                                <span>{item.name}</span>
+                                            </div>
+                                            {item.dropdownItems && (
+                                                <ChevronDown className="w-4 h-4" />
+                                            )}
                                         </div>
-                                        {item.dropdownItems && (
-                                            <ChevronDown className="w-4 h-4" />
-                                        )}
-                                    </div>
+                                    </Link>
                                     {item.dropdownItems && (
                                         <div className="pl-6 space-y-2">
                                             {item.dropdownItems.map((dropdownItem, idx) => (
@@ -204,15 +219,10 @@ const Header = ({ isAdmin = false }) => {
                                     )}
                                 </motion.div>
                             ))}
-                            <motion.div
-                                className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
-                                initial={{ opacity: 0, x: -20 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                whileHover={{ x: 5 }}
-                            >
+                            <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
                                 <User className="w-4 h-4" />
                                 <span>Profile</span>
-                            </motion.div>
+                            </div>
                         </div>
                     </motion.div>
                 )}

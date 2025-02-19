@@ -129,6 +129,7 @@ const formContainerVariants = {
     },
   },
 };
+
 const ContactPage = () => {
   const [formState, setFormState] = useState({
     name: '',
@@ -156,7 +157,7 @@ const ContactPage = () => {
       <main className="bg-[var(--background)] min-h-screen">
         <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent-primary)]/10 to-transparent" />
 
-        <div className="container mx-auto px-4 pt-24 pb-12 relative z-10">
+        <div className="container mx-auto px-4 pt-40 pb-12 relative z-10">
           <motion.div
             variants={pageVariants}
             initial="initial"
