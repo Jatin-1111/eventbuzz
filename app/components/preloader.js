@@ -127,7 +127,7 @@ const Preloader = () => {
           className="relative mb-8"
         >
           <Image
-            src="https://res.cloudinary.com/ddioxjwh7/image/upload/v1740033707/uploaded_images/vnowzen7qowdngxefwhr.jpg"
+            src="https://res.cloudinary.com/ddioxjwh7/image/upload/v1740035165/uploaded_images/lff6fzzkrowiticnyk7i.png"
             alt="EventBuzz logo"
             width={150}
             height={150}
