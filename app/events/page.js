@@ -181,7 +181,7 @@ const EventsPage = () => {
                 location: "Innovation Hub",
                 description: "24-hour coding challenge to build innovative solutions for real-world problems.",
                 capacity: "200 participants",
-                image: "/api/placeholder/400/320"
+                image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1740029111/uploaded_images/hjztm751noteeqhyqd2h.jpg"
             },
             {
                 id: 2,
@@ -192,7 +192,7 @@ const EventsPage = () => {
                 location: "Main Auditorium",
                 description: "A night of music, dance, and theatrical performances showcasing diverse talents.",
                 capacity: "500 attendees",
-                image: "/api/placeholder/400/320"
+                image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1740029109/uploaded_images/ww8z3hkioogsipzzqqb3.jpg"
             },
             {
                 id: 3,
@@ -203,7 +203,7 @@ const EventsPage = () => {
                 location: "Sports Complex",
                 description: "Inter-college sports competition featuring multiple sporting events.",
                 capacity: "300 participants",
-                image: "/api/placeholder/400/320"
+                image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1740029112/uploaded_images/diejyni8x9ml0p2drhqr.jpg",
             }
         ],
         past: [
@@ -216,7 +216,7 @@ const EventsPage = () => {
                 location: "Conference Hall",
                 description: "Annual technology conference featuring industry experts and innovative showcases.",
                 capacity: "400 attendees",
-                image: "/api/placeholder/400/320"
+                image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1740029114/uploaded_images/tancqmkl0v03u6v7gxno.jpg"
             }
         ],
         registered: [
@@ -229,7 +229,7 @@ const EventsPage = () => {
                 location: "Design Studio",
                 description: "Hands-on workshop on UI/UX design principles and tools.",
                 capacity: "50 participants",
-                image: "/api/placeholder/400/320"
+                image: "https://res.cloudinary.com/dgzxsc49b/image/upload/v1740029113/uploaded_images/ep6fwswvdx9jgcqafak2.jpg"
             }
         ]
     };
