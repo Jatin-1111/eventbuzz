@@ -27,15 +27,15 @@ export default function Footer() {
             <div className="space-y-2 flex flex-col items-center">
               <div className="flex items-center space-x-2 group">
                 <ArrowRight size={16} className="text-[var(--accent-primary)] group-hover:transform group-hover:translate-x-1 transition-transform" />
-                <a href="#" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Events</a>
+                <a href="events" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Events</a>
               </div>
               <div className="flex items-center space-x-2 group">
                 <ArrowRight size={16} className="text-[var(--accent-primary)] group-hover:transform group-hover:translate-x-1 transition-transform" />
-                <a href="#" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Register</a>
+                <a href="register" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Register</a>
               </div>
               <div className="flex items-center space-x-2 group">
                 <ArrowRight size={16} className="text-[var(--accent-primary)] group-hover:transform group-hover:translate-x-1 transition-transform" />
-                <a href="#" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Contact Us</a>
+                <a href="contact" className="text-[var(--text-secondary)] hover:text-[var(--text-primary)] text-sm transition-colors duration-200">Contact Us</a>
               </div>
             </div>
           </div>
