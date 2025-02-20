@@ -71,7 +71,7 @@ const EventCard = ({ event, activeTab }) => {
                         </motion.button>
                     </Link>
                     {activeTab === 'live' && !event.isRegistered && (
-                        <Link href={`/events/${event.id}/register`}>
+                        <Link href={`/register`}>
                             <motion.button
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}

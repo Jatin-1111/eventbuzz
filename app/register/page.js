@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { User, Mail, Phone, School, BookOpen, Calendar, Trophy, X, IndianRupee } from 'lucide-react';
 import { EventSelectionModal, EventSummary } from '../components/Events/EventSelectionModal';
+import { useRegistration } from '../components/hooks/useRegistration';
+
 
 const containerVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -41,6 +43,8 @@ const RegisterPage = () => {
   const [totalCost, setTotalCost] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvents, setSelectedEvents] = useState([]);
+
+  const { register, isLoading } = useRegistration();
 
   const courseOptions = [
     { value: 'biotech', label: 'B.Tech in Biotechnology' },
@@ -102,18 +106,33 @@ const RegisterPage = () => {
     setTotalCost(newTotal);
   }, [selectedEvents]);
 
-  const handleEventsSelect = (events) => {
-    setSelectedEvents(events);
-    // Also update formData
+  const handleEventsSelect = (eventValue) => {
+    const updatedEvents = selectedEvents.filter(event => event.value !== eventValue);
+    setSelectedEvents(updatedEvents);
     setFormData(prev => ({
       ...prev,
-      selectedEvents: events.map(event => event.value)
+      selectedEvents: updatedEvents.map(event => event.value)
     }));
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+
+    // Validate form data
+    if (selectedEvents.length === 0) {
+      toast.error('Please select at least one event');
+      return;
+    }
+
+    try {
+      await register({
+        ...formData,
+        selectedEvents: selectedEvents
+      });
+    } catch (error) {
+      console.error('Form submission error:', error);
+    }
   };
 
   return (
@@ -257,8 +276,9 @@ const RegisterPage = () => {
             </motion.div>
 
             {/* Selected Events Summary */}
+            {/* Selected Events Summary */}
             <AnimatePresence>
-              {formData.selectedEvents.length > 0 && (
+              {selectedEvents.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
@@ -273,21 +293,25 @@ const RegisterPage = () => {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    {formData.selectedEvents.map((eventValue) => {
-                      const event = eventOptions.find(e => e.value === eventValue);
-                      return (
-                        <div key={eventValue} className="flex justify-between items-center">
-                          <span className="text-[var(--text-secondary)]">{event.label}</span>
-                          <button
-                            type="button"
-                            onClick={() => handleEventSelection(eventValue)}
-                            className="text-[var(--text-secondary)] hover:text-[var(--status-error)]"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      );
-                    })}
+                    {selectedEvents.map((event) => (
+                      <div key={event.value} className="flex justify-between items-center">
+                        <span className="text-[var(--text-secondary)]">{event.label}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updatedEvents = selectedEvents.filter(e => e.value !== event.value);
+                            setSelectedEvents(updatedEvents);
+                            setFormData(prev => ({
+                              ...prev,
+                              selectedEvents: updatedEvents.map(e => e.value)
+                            }));
+                          }}
+                          className="text-[var(--text-secondary)] hover:text-[var(--status-error)]"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </motion.div>
               )}

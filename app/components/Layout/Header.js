@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useMotionValueEvent, AnimatePresence } from 'framer-motion';
 import { Menu, X, User, Shield, Calendar, ChevronDown, LogIn } from 'lucide-react';
 import Link from 'next/link';
+import { auth } from '@/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const MotionLink = motion(Link);
 
@@ -13,9 +16,22 @@ const Header = ({ isAuthenticated = false, userRole = 'user' }) => {
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [isMounted, setIsMounted] = useState(false);
     const { scrollY } = useScroll();
+    const [user, setUser] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const router = useRouter();
 
     useEffect(() => {
         setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            // Check if user has admin role (you can store this in Firebase custom claims or user profile)
+            setIsAdmin(currentUser?.email === "admin@example.com"); // Modify this according to your admin logic
+        });
+
+        return () => unsubscribe();
     }, []);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
@@ -86,7 +102,17 @@ const Header = ({ isAuthenticated = false, userRole = 'user' }) => {
     const navItems = getNavItems();
 
     const AuthButtons = () => {
-        if (!isAuthenticated) {
+        const handleLogout = async () => {
+            try {
+                await signOut(auth);
+                router.push('/login');
+                toast.success('Logged out successfully');
+            } catch (error) {
+                toast.error('Logout failed');
+            }
+        };
+
+        if (!user) {
             return (
                 <div className="flex items-center space-x-4">
                     <Link href="/login">
@@ -103,9 +129,24 @@ const Header = ({ isAuthenticated = false, userRole = 'user' }) => {
         }
 
         return (
-            <div className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer">
-                <User className="w-5 h-5" />
-                <span>Profile</span>
+            <div className="relative">
+                <motion.div
+                    className="flex items-center space-x-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] cursor-pointer"
+                    onMouseEnter={() => setActiveDropdown('profile')}
+                >
+                    <User className="w-5 h-5" />
+                    <span>{user.displayName || 'Profile'}</span>
+                    <ChevronDown className="w-4 h-4" />
+                </motion.div>
+                <DropdownMenu
+                    items={[
+                        { label: 'Profile', href: '/profile' },
+                        { label: 'Settings', href: '/settings' },
+                        { label: 'Logout', onClick: handleLogout }
+                    ]}
+                    isOpen={activeDropdown === 'profile'}
+                    onClose={() => setActiveDropdown(null)}
+                />
             </div>
         );
     };
@@ -121,17 +162,31 @@ const Header = ({ isAuthenticated = false, userRole = 'user' }) => {
                     onMouseLeave={onClose}
                 >
                     {items.map((item, index) => (
-                        <motion.a
-                            key={index}
-                            href="#"
-                            className="block px-4 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--elevated)] transition-colors duration-200"
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: index * 0.1 }}
-                            whileHover={{ x: 5 }}
-                        >
-                            {item}
-                        </motion.a>
+                        item.onClick ? (
+                            <motion.button
+                                key={index}
+                                onClick={item.onClick}
+                                className="w-full text-left block px-4 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--elevated)] transition-colors duration-200"
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                                whileHover={{ x: 5 }}
+                            >
+                                {item.label}
+                            </motion.button>
+                        ) : (
+                            <Link key={index} href={item.href}>
+                                <motion.a
+                                    className="block px-4 py-2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--elevated)] transition-colors duration-200"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    whileHover={{ x: 5 }}
+                                >
+                                    {item.label}
+                                </motion.a>
+                            </Link>
+                        )
                     ))}
                 </motion.div>
             )}

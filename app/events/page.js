@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
+import { cn } from "@/lib/utils";
 
 const EventCard = ({ event, activeTab }) => {
     const getCategoryColor = (category) => {
@@ -75,58 +77,85 @@ const EventCard = ({ event, activeTab }) => {
 
                         <Separator className="bg-gray-800" />
 
-                        <div className="flex gap-3 pt-2">
+                        <div className="grid grid-cols-2 gap-3 pt-4">
                             <Dialog>
                                 <DialogTrigger asChild>
-                                    <Button variant="outline" className="flex-1">
+                                    <Button
+                                        variant="outline"
+                                        className="w-full flex items-center justify-center"
+                                    >
                                         <InfoIcon className="w-4 h-4 mr-2" />
                                         Details
                                     </Button>
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="sm:max-w-[425px]">
                                     <DialogHeader>
-                                        <DialogTitle>{event.title}</DialogTitle>
-                                        <Badge className={getCategoryColor(event.category)}>
-                                            {event.category}
-                                        </Badge>
+                                        <div className="flex items-start justify-between">
+                                            <DialogTitle className="text-xl font-semibold">
+                                                {event.title}
+                                            </DialogTitle>
+                                            <Badge
+                                                variant="secondary"
+                                                className={`${getCategoryColor(event.category)} ml-2`}
+                                            >
+                                                {event.category}
+                                            </Badge>
+                                        </div>
                                     </DialogHeader>
-                                    <DialogDescription>
-                                        <div className="space-y-4">
-                                            <p>{event.description}</p>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div className="p-4 rounded-lg bg-gray-800">
-                                                    <h4 className="font-medium text-gray-200 mb-2">Date & Time</h4>
-                                                    <p className="text-gray-400">
-                                                        {new Date(event.date).toLocaleDateString()}
-                                                        <br />
-                                                        {event.time}
-                                                    </p>
+                                    <div className="mt-6 space-y-6">
+                                        <div className="text-[var(--text-secondary)]">
+                                            {event.description}
+                                        </div>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div className="p-4 rounded-lg bg-[var(--elevated)] border border-[var(--accent-primary)] border-opacity-10">
+                                                <div className="flex items-center mb-2 text-[var(--text-primary)]">
+                                                    <Calendar className="w-4 h-4 mr-2" />
+                                                    <h4 className="font-medium">Date & Time</h4>
                                                 </div>
-                                                <div className="p-4 rounded-lg bg-gray-800">
-                                                    <h4 className="font-medium text-gray-200 mb-2">Location</h4>
-                                                    <p className="text-gray-400">{event.location}</p>
+                                                <p className="text-[var(--text-secondary)]">
+                                                    {new Date(event.date).toLocaleDateString('en-US', {
+                                                        weekday: 'long',
+                                                        year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric'
+                                                    })}
+                                                    <br />
+                                                    {event.time}
+                                                </p>
+                                            </div>
+
+                                            <div className="p-4 rounded-lg bg-[var(--elevated)] border border-[var(--accent-primary)] border-opacity-10">
+                                                <div className="flex items-center mb-2 text-[var(--text-primary)]">
+                                                    <MapPin className="w-4 h-4 mr-2" />
+                                                    <h4 className="font-medium">Location</h4>
                                                 </div>
+                                                <p className="text-[var(--text-secondary)]">
+                                                    {event.location}
+                                                </p>
                                             </div>
                                         </div>
-                                    </DialogDescription>
+                                    </div>
                                 </DialogContent>
                             </Dialog>
 
-                            <Button 
-                                className={`flex-1 ${
-                                    activeTab === 'past' 
-                                        ? 'bg-gray-700 hover:bg-gray-600'
-                                        : activeTab === 'registered'
-                                            ? 'bg-green-600 hover:bg-green-500'
-                                            : 'bg-blue-600 hover:bg-blue-500'
-                                }`}
+                            <Button
+                                className={cn(
+                                    "w-full",
+                                    activeTab === 'past' && "bg-gray-600 hover:bg-gray-500 cursor-not-allowed",
+                                    activeTab === 'registered' && "bg-green-600 hover:bg-green-500",
+                                    activeTab === 'upcoming' && "bg-[var(--accent-primary)] hover:opacity-90"
+                                )}
                                 disabled={activeTab === 'past'}
+                                asChild={activeTab !== 'past'}
                             >
-                                {activeTab === 'past' 
-                                    ? 'Event Ended'
-                                    : activeTab === 'registered'
-                                        ? 'Registered'
-                                        : 'Register Now'}
+                                {activeTab === 'past' ? (
+                                    <span>Event Ended</span>
+                                ) : (
+                                    <Link href={'/register'}>
+                                        {activeTab === 'registered' ? 'Registered' : 'Register Now'}
+                                    </Link>
+                                )}
                             </Button>
                         </div>
                     </div>
@@ -268,21 +297,21 @@ const EventsPage = () => {
                 {/* Tabs */}
                 <Tabs value={activeTab} className="mb-8">
                     <TabsList className="flex justify-center bg-gray-900 p-1 rounded-lg">
-                        <TabsTrigger 
+                        <TabsTrigger
                             value="live"
                             onClick={() => setActiveTab('live')}
                             className="flex-1"
                         >
                             Live Events
                         </TabsTrigger>
-                        <TabsTrigger 
+                        <TabsTrigger
                             value="registered"
                             onClick={() => setActiveTab('registered')}
                             className="flex-1"
                         >
                             Registered
                         </TabsTrigger>
-                        <TabsTrigger 
+                        <TabsTrigger
                             value="past"
                             onClick={() => setActiveTab('past')}
                             className="flex-1"
@@ -299,7 +328,7 @@ const EventsPage = () => {
                     ) : error ? (
                         <div className="text-center p-8 bg-red-900/20 rounded-lg">
                             <p className="text-red-400">Failed to load events: {error}</p>
-                            <Button 
+                            <Button
                                 onClick={() => setActiveTab(activeTab)}
                                 className="mt-4"
                                 variant="destructive"
